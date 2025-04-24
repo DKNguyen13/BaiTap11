@@ -23,8 +23,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Thay đổi ảnh đại diện"
+        android:text="Thay đổi ảnh đại diện bằng cách nhập URL mới"
         android:textSize="14sp" />
+
+    <!-- Nhập URL ảnh đại diện -->
+    <EditText
+        android:id="@+id/edtAvatarUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:hint="Nhập URL ảnh đại diện"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textSize="16sp" />
 
     <!-- Email (readonly) -->
     <EditText
@@ -34,8 +46,18 @@
         android:layout_marginTop="24dp"
         android:enabled="false"
         android:hint="Email"
+        android:minHeight="48dp"
         android:padding="12dp"
         android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <!-- Số lượng video -->
+    <TextView
+        android:id="@+id/txtVideoCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Số lượng video: 0"
         android:textSize="16sp" />
 
     <!-- Save Button -->
