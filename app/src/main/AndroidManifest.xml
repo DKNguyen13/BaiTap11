@@ -21,6 +21,18 @@
         android:theme="@style/Theme.VideoShort"
         tools:targetApi="31">
         <activity
+            android:name=".activities.UpdateProfile"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UploadVideoFirebase"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProfileDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.VideoShortActivity"
             android:exported="false" />
         <activity

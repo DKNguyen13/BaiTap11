@@ -1,3 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">VideoShort</string>
+
+    <string-array name="video_links">
+        <item>https://archive.org/download/Popeye_forPresident/Popeye_forPresident_512kb.mp4</item>
+        <item>http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</item>
+        <item>https://archive.org/download/ElephantsDream/ed_1024_512kb.mp4</item>
+    </string-array>
 </resources>

@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void mapping() {
         loginEmail = findViewById(R.id.et_email);
-        loginPassword = findViewById(R.id.et_email);
+        loginPassword = findViewById(R.id.et_password);
         loginButton = findViewById(R.id.btn_login);
         signupRedirectText = findViewById(R.id.tv_to_register);
     }

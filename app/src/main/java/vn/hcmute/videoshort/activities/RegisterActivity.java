@@ -38,6 +38,7 @@ import java.util.Map;
 
 import vn.hcmute.videoshort.R;
 import vn.hcmute.videoshort.configs.CloudinaryConfig;
+import vn.hcmute.videoshort.model.UserModel;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -77,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
         finish();
     }
-
+/*
     private void registerUser() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
@@ -90,6 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
                     Toast.makeText(RegisterActivity.this, "SignUp Successful", Toast.LENGTH_SHORT).show();
                     uploadAvatarImage();
                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
@@ -101,6 +103,34 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+    private void uploadAvatarImage(FirebaseUser firebaseUser) {
+        File file = new File(getRealPathFromURI(selectedImageUri));
+
+        ProgressDialog dialog = ProgressDialog.show(this, "Đang tải ảnh lên...", "Vui lòng đợi", true);
+
+        new Thread(() -> {
+            try {
+                Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+                String imageUrl = (String) uploadResult.get("secure_url");
+
+                runOnUiThread(() -> {
+                    saveUserToDatabase(firebaseUser, imageUrl);
+                    dialog.dismiss();
+                });
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    Toast.makeText(RegisterActivity.this, "Tải ảnh thất bại", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                });
+            }
+        }).start();
+    }
+
 
     private void uploadAvatarImage() {
         if (selectedImageUri != null) {
@@ -129,6 +159,86 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Please select an avatar image", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+
+
+*/
+    private void registerUser() {
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser firebaseUser = auth.getCurrentUser();
+                Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+
+                if (selectedImageUri != null) {
+                    uploadAvatarImage();
+                } else {
+                    // Nếu không chọn ảnh → dùng ảnh mặc định
+                    saveUserToDatabase(firebaseUser, "https://res.cloudinary.com/demec8nev/image/upload/v1745039879/default_avatar_r7xkiv.png");
+                }
+
+            } else {
+                Toast.makeText(RegisterActivity.this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void saveUserToDatabase(FirebaseUser user, String avatarUrl) {
+        String uid = user.getUid();
+        String email = user.getEmail();
+
+        UserModel userModel = new UserModel(uid, email, avatarUrl);
+
+        dbRef.child(uid).setValue(userModel).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Đăng ký và lưu thông tin thành công", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                finish();
+            } else {
+                Toast.makeText(this, "Lưu thông tin thất bại", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void uploadAvatarImage() {
+        if (selectedImageUri != null) {
+            File file = new File(getRealPathFromURI(selectedImageUri));
+
+            new Thread(() -> {
+                try {
+                    Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+                    String imageUrl = (String) uploadResult.get("secure_url");
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    if (user != null) {
+                        saveUserToRealtimeDB(user.getUid(), user.getEmail(), imageUrl);
+                        runOnUiThread(() -> {
+                            Toast.makeText(RegisterActivity.this, "Avatar uploaded và tài khoản đã lưu", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                        });
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() ->
+                            Toast.makeText(RegisterActivity.this, "Upload ảnh thất bại", Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }).start();
+        }
+    }
+    private void saveUserToRealtimeDB(String uid, String email, String avatarUrl) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(uid);
+        userRef.child("email").setValue(email);
+        userRef.child("avatarUrl").setValue(avatarUrl);
     }
 
     // Save avatar URL to Firebase

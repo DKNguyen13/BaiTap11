@@ -132,7 +132,7 @@ public class UploadVideoActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String avatarUrl = snapshot.child("avatarUrl").getValue(String.class);
                 if (avatarUrl == null || avatarUrl.isEmpty()) {
-                    avatarUrl = "https://example.com/default-avatar.png"; // Provide default avatar URL
+                    avatarUrl = "https://res.cloudinary.com/demec8nev/image/upload/v1745039879/default_avatar_r7xkiv.png"; // Provide default avatar URL
                 }
 
                 DatabaseReference videoRef = FirebaseDatabase.getInstance().getReference("videos").push();

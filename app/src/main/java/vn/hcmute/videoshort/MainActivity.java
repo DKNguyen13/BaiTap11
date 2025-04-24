@@ -11,8 +11,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 
-import vn.hcmute.videoshort.R;
 import vn.hcmute.videoshort.activities.UploadVideoActivity;
+import vn.hcmute.videoshort.activities.UploadVideoFirebase;
 import vn.hcmute.videoshort.activities.VideoShortActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         btnUpload = findViewById(R.id.btnUpload);
 
         btnUpload.setOnClickListener(v -> {
-            Intent myIntent = new Intent(this, UploadVideoActivity.class);
+            Intent myIntent = new Intent(this, UploadVideoFirebase.class);
             startActivity(myIntent);
         });
 
@@ -36,10 +36,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(myIntent);
         });
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
 }
